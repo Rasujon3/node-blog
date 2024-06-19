@@ -28,7 +28,13 @@ function show(req, res) {
   const id = req.params.id;
   models.Post.findByPk(id)
     .then((result) => {
-      res.status(200).json({ result });
+      if (result) {
+        res.status(200).json({ result });
+      } else {
+        res.status(400).json({
+          message: "Post not found.",
+        });
+      }
     })
     .catch((error) => {
       res.status(500).json({
@@ -64,10 +70,16 @@ function update(req, res) {
 
   models.Post.update(updatePost, { where: { id: id, userId: userId } })
     .then((result) => {
-      res.status(200).json({
-        message: "Post updated successfully.",
-        post: result,
-      });
+      if (result[0]) {
+        res.status(200).json({
+          message: "Post updated successfully.",
+          post: result,
+        });
+      } else {
+        res.status(400).json({
+          message: "Post not found.",
+        });
+      }
     })
     .catch((error) => {
       res.status(500).json({
@@ -82,9 +94,15 @@ function destroy(req, res) {
 
   models.Post.destroy({ where: { id: id, userId: userId } })
     .then((result) => {
-      res.status(200).json({
-        message: "Post deleted successfully.",
-      });
+      if (result) {
+        res.status(200).json({
+          message: "Post deleted successfully.",
+        });
+      } else {
+        res.status(400).json({
+          message: "Post not found.",
+        });
+      }
     })
     .catch((error) => {
       res.status(500).json({
